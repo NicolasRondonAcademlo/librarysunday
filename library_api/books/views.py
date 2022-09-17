@@ -1,5 +1,6 @@
 from django.conf import settings
-from rest_framework import status, viewsets
+from django.contrib.auth.models import User
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -12,6 +13,7 @@ from .serializers import (
     BookItemUserSerializerCreate,
     BookSerializer,
     CategorySerializer,
+    UserSerializerView,
 )
 
 
@@ -25,6 +27,8 @@ class BookViewSet(viewsets.ModelViewSet):
     permission_classes = [IsLibrarianOrReadOnly]
     serializer_class = BookSerializer
     queryset = Book.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["title", "author__name", "categories__name"]
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
@@ -93,3 +97,17 @@ class BookItemUserViewSet(viewsets.ModelViewSet):
             return BookItemUserSerializerCreate
         else:
             return BookItemUserSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    # permission_classes = [IsLibrarianOrReadOnly]
+    serializer_class = UserSerializerView
+    queryset = User.objects.all()
+
+    @action(detail=True)
+    def books_rent(self, request, pk):
+        data = BookItemUser.objects.filter(user_id=pk)
+        serializer = BookItemUserSerializer(
+            data, many=True, context={"request": request}
+        )
+        return Response({"data": serializer.data})
