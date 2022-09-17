@@ -1,0 +1,38 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v1.2.3
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
+      - id: black
+        entry: black library_api/
+  - repo: https://github.com/PyCQA/flake8
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          [
+            flake8-docstrings,
+            flake8-import-order,
+            flake8-bugbear,
+            pep8-naming,
+            flake8-bandit,
+          ]
+        exclude: library_api/tests
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.9.3
+    hooks:
+      - id: isort
+        args: ["--profile", "black", "library_api/"]
+  - repo: local
+    hooks:
+      - id: safety
+        name: safety
+        language: system
+        entry: safety check -r requirements/base.txt
+        pass_filenames: false
