@@ -39,7 +39,7 @@ class BookItem(models.Model):
     shelf = models.ForeignKey(BookShelf, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return self.book.title + "---" + self.id
+        return self.book.title + "---" + str(self.id)
 
 
 class BookItemUser(models.Model):
