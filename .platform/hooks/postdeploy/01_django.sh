@@ -2,8 +2,7 @@
 
 source /var/app/venv/*/bin/activate && {
 
-# collecting static files
-python library_api/manage.py collectstatic --noinput;
+
 # log which migrations have already been applied
 python library_api/manage.py showmigrations;
 # migrate the rest
